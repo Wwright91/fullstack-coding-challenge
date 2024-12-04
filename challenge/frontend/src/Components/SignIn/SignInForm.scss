@@ -1,0 +1,10 @@
+.SignInForm {
+  &__Buttons {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__Input {
+    display: grid;
+  }
+}
