@@ -32,7 +32,12 @@ class ClosedCasesViewSet(viewsets.ModelViewSet):
   http_method_names = ['get'] 
   def list(self, request):
     # Get only complaints that are close from the user's district
-    return Response()
+    user_profile = UserProfile.objects.get(user=request.user)
+    user_district = user_profile.district
+    closed_cases = Complaint.objects.filter(account=f"NYCC{user_district}", closedate__isnull=False)
+    serializer = ComplaintSerializer(closed_cases, many=True)
+
+    return Response(serializer.data)
     
 class TopComplaintTypeViewSet(viewsets.ModelViewSet):
   http_method_names = ['get']
