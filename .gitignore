@@ -1,0 +1,6 @@
+DEBUGGING.md
+*.venv
+./venv
+*node_modules
+challenge/venv
+.venv/pyvenv.cfg
