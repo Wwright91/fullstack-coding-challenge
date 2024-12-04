@@ -16,7 +16,7 @@ class ComplaintViewSet(viewsets.ModelViewSet):
     complaints = Complaint.objects.filter(account=f"NYCC{user_district}")
     serializer = ComplaintSerializer(complaints, many=True)
 
-    return Response(serializer.data)
+    return Response({"complaints": serializer.data, "user": UserProfileSerializer(user_profile).data})
 
 class OpenCasesViewSet(viewsets.ModelViewSet):
   http_method_names = ['get']
