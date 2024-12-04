@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "./SignInForm.scss";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
@@ -8,6 +9,8 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const style = {
   position: "absolute",
@@ -24,9 +27,13 @@ const style = {
   alignItems: "center",
 };
 
+const URL = process.env.REACT_APP_API_URL;
+
 const SignInForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [user, setUser] = useState({ username: "", password: "" });
+
+  const navigate = useNavigate();
 
   const handleTextChange = (e) => {
     setUser({ ...user, [e.target.id]: e.target.value });
@@ -34,11 +41,29 @@ const SignInForm = () => {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
+  const TOKENEXPIRATION = 1 / 48;
+
+  const fetchToken = async (e) => {
+    e.preventDefault();
+
+    const res = await axios.post(`${URL}/login/`, {
+      ...user,
+    });
+
+    const token = await res.data.token;
+    console.log("token", token);
+    Cookies.set("token", token, {
+      expires: TOKENEXPIRATION,
+    });
+
+    navigate("/dashboard")
+  };
+
   return (
     <div style={style}>
       <Box
         component="form"
-        onSubmit={""}
+        onSubmit={fetchToken}
         sx={{
           "& .MuiTextField-root": { my: 1, width: "30ch" },
         }}
