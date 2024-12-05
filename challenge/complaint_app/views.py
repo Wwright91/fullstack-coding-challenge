@@ -49,3 +49,14 @@ class TopComplaintTypeViewSet(viewsets.ModelViewSet):
     top_3_complaint_types = Complaint.objects.filter(account=f"NYCC{user_district}").values('complaint_type').annotate(count=Count('complaint_type')).order_by('-count')[:3]
             
     return Response(top_3_complaint_types)
+
+class ConstituentsComplaintsViewSet(viewsets.ModelViewSet):
+  http_method_names = ['get']
+  def list(self, request):
+    # Get all complaints that were made by constituents that live in the logged in council member’s district
+    user_profile = UserProfile.objects.get(user=request.user)
+    user_district = user_profile.district
+    const_complaints = Complaint.objects.filter(council_dist=f"NYCC{user_district}")
+    serializer = ComplaintSerializer(const_complaints, many=True)
+  
+    return Response(serializer.data)
