@@ -12,7 +12,7 @@ class ComplaintViewSet(viewsets.ModelViewSet):
   def list(self, request):
     # Get all complaints from the user's district
     user_profile = UserProfile.objects.get(user=request.user)
-    user_district = user_profile.district
+    user_district = user_profile.formatted_district
     complaints = Complaint.objects.filter(account=f"NYCC{user_district}")
     serializer = ComplaintSerializer(complaints, many=True)
 
@@ -23,7 +23,7 @@ class OpenCasesViewSet(viewsets.ModelViewSet):
   def list(self, request):
     # Get only the open complaints from the user's district
     user_profile = UserProfile.objects.get(user=request.user)
-    user_district = user_profile.district
+    user_district = user_profile.formatted_district
     open_cases = Complaint.objects.filter(account=f"NYCC{user_district}", closedate__isnull=True)
     serializer = ComplaintSerializer(open_cases, many=True)
   
@@ -34,7 +34,7 @@ class ClosedCasesViewSet(viewsets.ModelViewSet):
   def list(self, request):
     # Get only complaints that are close from the user's district
     user_profile = UserProfile.objects.get(user=request.user)
-    user_district = user_profile.district
+    user_district = user_profile.formatted_district
     closed_cases = Complaint.objects.filter(account=f"NYCC{user_district}", closedate__isnull=False)
     serializer = ComplaintSerializer(closed_cases, many=True)
 
@@ -45,7 +45,7 @@ class TopComplaintTypeViewSet(viewsets.ModelViewSet):
   def list(self, request):
     # Get the top 3 complaint types from the user's district
     user_profile = UserProfile.objects.get(user=request.user)
-    user_district = user_profile.district
+    user_district = user_profile.formatted_district
     top_3_complaint_types = Complaint.objects.filter(account=f"NYCC{user_district}").values('complaint_type').annotate(count=Count('complaint_type')).order_by('-count')[:3]
             
     return Response(top_3_complaint_types)
@@ -55,7 +55,7 @@ class ConstituentsComplaintsViewSet(viewsets.ModelViewSet):
   def list(self, request):
     # Get all complaints that were made by constituents that live in the logged in council member’s district
     user_profile = UserProfile.objects.get(user=request.user)
-    user_district = user_profile.district
+    user_district = user_profile.formatted_district
     const_complaints = Complaint.objects.filter(council_dist=f"NYCC{user_district}")
     serializer = ComplaintSerializer(const_complaints, many=True)
   

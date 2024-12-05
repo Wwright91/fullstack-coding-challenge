@@ -10,6 +10,16 @@ class UserProfile(models.Model):
   district = models.CharField(max_length=5, blank=True, default="")
   party = models.CharField(max_length=50, blank=True, default="", null=True)
   borough = models.CharField(max_length=50, blank=True, default="")
+
+  @property
+  def formatted_district(self):
+    """Returns district number padded with leading zero if single digit"""
+    try:
+        district_num = int(self.district)
+        return f"{district_num:02d}"
+    except (ValueError, TypeError):
+        return self.district 
+
   def __str__(self):
     return str(self.user)
     
