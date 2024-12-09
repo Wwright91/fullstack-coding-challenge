@@ -19,7 +19,7 @@ import Cookies from "js-cookie";
 import ComplaintsTable from "../ComplaintsTable/ComplaintsTable";
 import { Button } from "@mui/material";
 
-const URL = process.env.REACT_APP_API_URL;
+const URL = "http://localhost:8000";
 
 const style = createTheme({
   cssVariables: {
@@ -38,8 +38,8 @@ const style = createTheme({
 });
 
 const Dashboard = () => {
-  const [activeDataset, setActiveDataset] = useState(allComplaints);
   const [allComplaints, setAllComplaints] = useState([]);
+  const [activeDataset, setActiveDataset] = useState(allComplaints);
   const [closedComplaints, setClosedComplaints] = useState([]);
   const [complaintType, setComplaintType] = useState(null);
   const [constituentComplaints, setConstituentComplaints] = useState([]);
@@ -124,10 +124,14 @@ const Dashboard = () => {
     if (routeParams["*"] === "") {
       setActiveDataset(allComplaints);
     }
-  }, [routeParams]);
+  }, [routeParams, allComplaints]);
 
   useEffect(() => {
-    getComplaints();
+    const fetchComplaints = async () => {
+      await getComplaints();
+    };
+
+    fetchComplaints();
   }, [complaintType]);
 
   const USERNAME = (user) => {
