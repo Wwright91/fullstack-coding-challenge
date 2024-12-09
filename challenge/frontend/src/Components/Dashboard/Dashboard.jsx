@@ -15,7 +15,7 @@ import BusinessIcon from "@mui/icons-material/Business";
 import Badge from "@mui/material/Badge";
 import axios from "axios";
 import Cookies from "js-cookie";
-
+import SignOut from "../SignOut/SignOut";
 import ComplaintsTable from "../ComplaintsTable/ComplaintsTable";
 import { Button } from "@mui/material";
 
@@ -255,7 +255,11 @@ const Dashboard = () => {
       }}
       router={router}
     >
-      <DashboardLayout>
+      <DashboardLayout
+        slots={{
+          toolbarActions: SignOut,
+        }}
+      >
         <div style={{ marginBottom: "16px" }}>
           {datasets.map((dataset) => (
             <Button
