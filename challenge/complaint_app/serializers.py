@@ -9,9 +9,19 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserProfileSerializer(serializers.ModelSerializer):
     # BONUS Task: Flatten out the User object inside of UserProfile.
+    
+    user_id = serializers.IntegerField(source='user.id')
+    username = serializers.CharField(source='user.username')
+    first_name = serializers.CharField(source='user.first_name')
+    last_name = serializers.CharField(source='user.last_name')
+    formatted_district = serializers.SerializerMethodField()
+    
     class Meta:
         model = UserProfile
-        fields = ('id','user','full_name','district','party','borough')
+        fields = ('id','user_id','username','first_name','last_name','full_name','district','formatted_district','party','borough')
+
+    def get_formatted_district(self, obj):
+        return obj.formatted_district
 
 class ComplaintSerializer(serializers.ModelSerializer):
     class Meta:
