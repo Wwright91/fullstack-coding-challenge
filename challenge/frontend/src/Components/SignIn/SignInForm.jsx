@@ -48,16 +48,23 @@ const SignInForm = () => {
   const fetchToken = async (e) => {
     e.preventDefault();
 
-    const res = await axios.post(`${URL}/login/`, {
-      ...user,
-    });
+    try {
+      const res = await axios.post(`${URL}/login/`, {
+        ...user,
+      });
 
-    const token = await res.data.token;
-    Cookies.set("token", token, {
-      expires: TOKENEXPIRATION,
-    });
+      const token = await res.data.token;
+      Cookies.set("token", token, {
+        expires: TOKENEXPIRATION,
+      });
 
-    navigate("/dashboard");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(error);
+      if (error.message === "Request failed with status code 400") {
+        alert(`${error.response.data.non_field_errors} Please try again.`);
+      }
+    }
   };
 
   const theme = createTheme({
